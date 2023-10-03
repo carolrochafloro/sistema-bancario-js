@@ -179,7 +179,6 @@ const transferirSaldo = (req, res) => {
     numero_conta_destino: Number(numero_conta_destino),
     valor,
   };
-  console.log(novaTransferencia);
   transferencias.push(novaTransferencia);
   return res.status(200).send();
 };
@@ -190,18 +189,6 @@ const obterSaldo = (req, res) => {
   let numeroConta = contas.find((conta) => {
     return conta.numero === Number(numero_conta);
   });
-  if (!numeroConta) {
-    return res
-      .status(400)
-      .json({ mensagem: "A conta não foi informada ou não existe" });
-  }
-  //comparar senha da query com senha da conta encontrada
-  if (senha !== numeroConta.usuario.senha) {
-    return res.status(400).json({ mensagem: "Senha incorreta" });
-  }
-  if (!senha) {
-    return res.status(400).json({ mensagem: "A senha não foi informada" });
-  }
   // Exibir o saldo da conta bancária em questão
   return res.status(200).json({ saldo: numeroConta.saldo });
 };
@@ -212,19 +199,6 @@ const obterExtrato = (req, res) => {
   let numeroConta = contas.find((conta) => {
     return conta.numero === Number(numero_conta);
   });
-
-  if (!numeroConta) {
-    return res
-      .status(400)
-      .json({ mensagem: "A conta não foi informada ou não existe" });
-  }
-  //comparar senha da query com senha da conta encontrada
-  if (senha !== numeroConta.usuario.senha) {
-    return res.status(400).json({ mensagem: "Senha incorreta" });
-  }
-  if (!senha) {
-    return res.status(400).json({ mensagem: "A senha não foi informada" });
-  }
   const extSaques = saques.filter((mov) => {
     return mov.numero_conta === Number(numero_conta);
   });

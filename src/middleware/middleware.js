@@ -58,10 +58,12 @@ const validarNumConta = (req, res, next) => {
 
 const validarContaBody = (req, res, next) => {
   let { numero_conta } = req.body;
+
   numero_conta = Number(numero_conta);
   let contaInformada = contas.find((conta) => {
     return conta.numero === numero_conta;
   });
+
   if (!contaInformada) {
     return res.status(400).json({ mensagem: "Conta não informada" });
   }
@@ -98,6 +100,27 @@ const validarSaldoConta = (req, res, next) => {
   next();
 };
 
+const validarContaQuery = (req, res, next) => {
+  const { numero_conta, senha } = req.query;
+  //Verificar se o numero da conta e a senha foram informadas (passado como query params na url)
+  let numeroConta = contas.find((conta) => {
+    return conta.numero === Number(numero_conta);
+  });
+  if (!numeroConta) {
+    return res
+      .status(400)
+      .json({ mensagem: "A conta não foi informada ou não existe" });
+  }
+  //comparar senha da query com senha da conta encontrada
+  if (senha !== numeroConta.usuario.senha) {
+    return res.status(400).json({ mensagem: "Senha incorreta" });
+  }
+  if (!senha) {
+    return res.status(400).json({ mensagem: "A senha não foi informada" });
+  }
+  next();
+};
+
 module.exports = {
   validarSenha,
   validarNovosDados,
@@ -105,4 +128,5 @@ module.exports = {
   validarContaBody,
   validarSenhaConta,
   validarSaldoConta,
+  validarContaQuery,
 };

@@ -18,13 +18,13 @@ const {
   validarContaBody,
   validarSenhaConta,
   validarSaldoConta,
+  validarContaQuery,
 } = require("./middleware/middleware");
 
 rotas.get("/contas", validarSenha, listagemContas);
 rotas.post("/contas", validarNovosDados, criarConta);
 rotas.put(
   "/contas/atualizar/:numeroConta",
-
   validarNovosDados,
   validarNumConta,
   atualizarDados
@@ -39,7 +39,7 @@ rotas.post(
   sacarSaldo
 );
 rotas.post("/transacoes/transferir", validarSenhaConta, transferirSaldo);
-rotas.get("/contas/saldo/", obterSaldo);
-rotas.get("/contas/extrato", obterExtrato);
+rotas.get("/contas/saldo/", validarContaQuery, obterSaldo);
+rotas.get("/contas/extrato", validarContaQuery, obterExtrato);
 
 module.exports = rotas;
