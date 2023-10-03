@@ -1,5 +1,6 @@
 const express = require("express");
 const rotas = express();
+//import operacoes
 const {
   listagemContas,
   criarConta,
@@ -11,6 +12,7 @@ const {
   obterSaldo,
   obterExtrato,
 } = require("./controladores/operacoes");
+//import middleware
 const {
   validarSenha,
   validarNovosDados,
@@ -21,6 +23,7 @@ const {
   validarContaQuery,
 } = require("./middleware/middleware");
 
+//rotas
 rotas.get("/contas", validarSenha, listagemContas);
 rotas.post("/contas", validarNovosDados, criarConta);
 rotas.put(

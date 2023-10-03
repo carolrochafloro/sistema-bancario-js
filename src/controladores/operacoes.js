@@ -1,5 +1,4 @@
 let {
-  banco,
   contas,
   saques,
   depositos,
@@ -7,11 +6,11 @@ let {
   numConta,
 } = require("../bancodedados");
 
-// // rotas.get("/contas",); listar. Verificações: senha (informada e correta)
+//listagem - conta validada no midd
 const listagemContas = (req, res) => {
   return res.json(contas);
 };
-// rotas.post("/contas",); criar conta. Verificar se CPF existe
+//criar conta - dados validados no midd
 const criarConta = (req, res) => {
   let { nome, cpf, data_nascimento, telefone, email, senha } = req.body;
 
@@ -30,7 +29,7 @@ const criarConta = (req, res) => {
   contas.push(novaConta);
   return res.status(200).send();
 };
-// rotas.put("/contas/:numeroConta/usuario"); editar dados
+//atualizar - dados validados no midd
 const atualizarDados = (req, res) => {
   const { nome, cpf, data_nascimento, telefone, email, senha } = req.body;
   const { numeroConta } = req.params;
@@ -48,7 +47,7 @@ const atualizarDados = (req, res) => {
 
   return res.status(200).send();
 };
-// rotas.delete("/contas/:numeroConta");
+//deletar conta
 const deletarConta = (req, res) => {
   //validar se o saldo é 0
   const { numeroConta } = req.params;
@@ -67,7 +66,7 @@ const deletarConta = (req, res) => {
   });
   return res.status(200).send();
 };
-// rotas.post("/transacoes/depositar");
+//depositar - contas origem e destino, senha e saldo validados no midd
 const depositarSaldo = (req, res) => {
   const { numero_conta, valor } = req.body;
   let saldoAdicionar = Number(valor);
@@ -96,7 +95,7 @@ const depositarSaldo = (req, res) => {
   depositos.push(novoDeposito);
   return res.status(200).json({ mensagem: "Saldo adicionado com sucesso" });
 };
-// rotas.post("/transacoes/sacar");
+//sacar - contas origem e destino, senha e saldo validados no midd
 const sacarSaldo = (req, res) => {
   const { numero_conta, valor } = req.body;
   let saldoSubtrair = Number(valor);
@@ -126,10 +125,9 @@ const sacarSaldo = (req, res) => {
   saques.push(novoSaque);
   return res.status(200).json({ mensagem: "Saque realizado com sucesso" });
 };
-// rotas.post("/transacoes/transferir");
+//transferir - contas origem e destino, senha e saldo validados no midd
 const transferirSaldo = (req, res) => {
   let { numero_conta_origem, numero_conta_destino, valor } = req.body;
-  //validar conta de origem
   numero_conta_origem = Number(numero_conta_origem);
   let contaOrigem = contas.find((conta) => {
     return conta.numero === numero_conta_origem;
@@ -182,7 +180,7 @@ const transferirSaldo = (req, res) => {
   transferencias.push(novaTransferencia);
   return res.status(200).send();
 };
-// rotas.get("/contas/saldo");
+//saldo - query params validados no midd
 const obterSaldo = (req, res) => {
   const { numero_conta, senha } = req.query;
   //Verificar se o numero da conta e a senha foram informadas (passado como query params na url)
@@ -192,7 +190,7 @@ const obterSaldo = (req, res) => {
   // Exibir o saldo da conta bancária em questão
   return res.status(200).json({ saldo: numeroConta.saldo });
 };
-// rotas.get("/contas/extrato");
+//extrato - query params validados no midd
 const obterExtrato = (req, res) => {
   const { numero_conta, senha } = req.query;
   //Verificar se o numero da conta e a senha foram informadas (passado como query params na url)

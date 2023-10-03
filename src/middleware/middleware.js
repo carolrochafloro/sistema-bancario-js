@@ -1,13 +1,6 @@
-let {
-  banco,
-  contas,
-  saques,
-  depositos,
-  transferencias,
-  numConta,
-} = require("../bancodedados");
+let { banco, contas } = require("../bancodedados");
 
-//middleware validar senha banco
+//validar senha do banco - rota listar
 const validarSenha = (req, res, next) => {
   const { senha_banco } = req.query;
   if (!senha_banco) {
@@ -19,7 +12,7 @@ const validarSenha = (req, res, next) => {
   next();
 };
 
-//middleware validar novos dados
+//validar novos dados - rota atualizar
 const validarNovosDados = (req, res, next) => {
   let { nome, cpf, data_nascimento, telefone, email, senha } = req.body;
   if (!nome || !cpf || !data_nascimento || !telefone || !email || !senha) {
@@ -41,6 +34,7 @@ const validarNovosDados = (req, res, next) => {
   next();
 };
 
+//validar conta como parâmetro de URL
 const validarNumConta = (req, res, next) => {
   const { numeroConta } = req.params;
 
@@ -55,7 +49,7 @@ const validarNumConta = (req, res, next) => {
   }
   next();
 };
-
+//validar conta body - rota deposito, saque e transf.
 const validarContaBody = (req, res, next) => {
   let { numero_conta } = req.body;
 
@@ -69,7 +63,7 @@ const validarContaBody = (req, res, next) => {
   }
   next();
 };
-
+//validar senha conta body - rota deposito, saque e transf
 const validarSenhaConta = (req, res, next) => {
   let { senha } = req.body;
 
@@ -87,22 +81,21 @@ const validarSenhaConta = (req, res, next) => {
   next();
 };
 
+//validar saldo - rota saque
 const validarSaldoConta = (req, res, next) => {
   let { numero_conta, valor } = req.body;
   numero_conta = Number(numero_conta);
   let contaInformada = contas.find((conta) => {
     return conta.numero === numero_conta;
   });
-
-  if (contaInformada.saldo <= Number(valor)) {
+  if (contaInformada.saldo < Number(valor)) {
     return res.status(400).json({ mensagem: "O saldo é insuficiente" });
   }
   next();
 };
-
+//validar conta e senha query - rotas extrato e saldo
 const validarContaQuery = (req, res, next) => {
   const { numero_conta, senha } = req.query;
-  //Verificar se o numero da conta e a senha foram informadas (passado como query params na url)
   let numeroConta = contas.find((conta) => {
     return conta.numero === Number(numero_conta);
   });
@@ -111,7 +104,6 @@ const validarContaQuery = (req, res, next) => {
       .status(400)
       .json({ mensagem: "A conta não foi informada ou não existe" });
   }
-  //comparar senha da query com senha da conta encontrada
   if (senha !== numeroConta.usuario.senha) {
     return res.status(400).json({ mensagem: "Senha incorreta" });
   }
